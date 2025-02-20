@@ -1,9 +1,13 @@
 import csv
 from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 import os
+import sys
 
-# Specify the path to your .csv file
-csv_file_path = r'C:\Users\mulle\Desktop\JASPRAVIM25\marian11_app\xmltransformer\mz001.csv'
+csv_file_path = sys.argv[1]
+myprefix = sys.argv[2]
+mydate = sys.argv[3]
+mycompany = sys.argv[4]
+lastday = sys.argv[5]
 # Initialize variables
 dateSMR = None
 castka1Value = None
@@ -132,9 +136,9 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
         <IntDokl>
             <Doklad></Doklad>
             <Popis>hrubé mzdy {dateSMR}</Popis>
-            <DatUcPr>2023-12-31</DatUcPr>
-            <DatPln>2023-12-31</DatPln>
-            <DatumKV>2023-12-31</DatumKV>
+            <DatUcPr>{mydate}</DatUcPr>
+            <DatPln>{mydate}</DatPln>
+            <DatumKV>{mydate}</DatumKV>
             <CisloZapoc>0</CisloZapoc>
             <VarSym>HM{dateMR}</VarSym>
             <Adresa>
@@ -214,7 +218,7 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
 </MoneyData>
 """
 # Output to file
-output_path = os.path.join(os.getcwd(), "ID.xml")
+output_path = os.path.join(os.getcwd(), f"ID_{mycompany}_{mydate}.xml")
 with open(output_path, "w", encoding="utf-8") as xml_file:
     xml_file.write(xml_template)
 

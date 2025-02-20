@@ -1,62 +1,93 @@
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
+import ttkbootstrap as ttk
 import subprocess
-import os
+import calendar
 
-# Function to handle the "GO!" button click
-def start_program():
-    csv_file_path = file_path_var.get()
-    todaysdate = date_var.get()
-    companyname = company_var.get()
-    myprefix = prefix_var.get()
+def get_last_day_of_month(date_str):
+    """Calculate the last day of the given month (format YYYY-MM-DD)"""
+    try:
+        year, month, _ = map(int, date_str.split('-'))
+        last_day = calendar.monthrange(year, month)[1]
+        return f"{year}-{month:02d}-{last_day:02d}"
+    except ValueError:
+        return None  # Invalid date format
 
-    # You can pass these variables to your script or use them as needed
-    print(f"CSV File Path: {csv_file_path}")
-    print(f"Date: {todaysdate}")
-    print(f"Company: {companyname}")
-    print(f"Prefix: {myprefix}")
-
-    # Run the idtransformer.py script
-    script_path = "idtransformer.py"  # Replace with the actual path if needed
-    if os.path.exists(script_path):
-        subprocess.run(["python", script_path], check=True)
-    else:
-        print(f"Script {script_path} not found.")
-
-# Function to open a file dialog
 def browse_file():
-    file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv"), ("All Files", "*.*")])
-    file_path_var.set(file_path)
+    """Open file dialog to select a file"""
+    filepath = filedialog.askopenfilename()
+    entry_filepath.delete(0, tk.END)
+    entry_filepath.insert(0, filepath)
 
-# Create the main application window
-root = tk.Tk()
-root.title("XML TRANSFORMER 2o")
+def save_and_run():
+    """Get input values, compute last day of the month, and run scripts"""
+    date = entry_date.get()
+    company = entry_company.get()
+    prefix = entry_prefix.get()
+    filepath = entry_filepath.get()
 
-# Filepath field
-tk.Label(root, text="CSV Súbor:").grid(row=0, column=0, padx=10, pady=5, sticky="e")
-file_path_var = tk.StringVar()
-tk.Entry(root, textvariable=file_path_var, width=50).grid(row=0, column=1, padx=10, pady=5)
-tk.Button(root, text="Browse", command=browse_file).grid(row=0, column=2, padx=10, pady=5)
+    if not date or not company or not prefix or not filepath:
+        messagebox.showerror("Error", "All fields are required!")
+        return
 
-# Date field
-tk.Label(root, text="Datum (YYYY-MM-DD):").grid(row=1, column=0, padx=10, pady=5, sticky="e")
-date_var = tk.StringVar()
-tk.Entry(root, textvariable=date_var, width=50).grid(row=1, column=1, padx=10, pady=5)
+    datelastday = get_last_day_of_month(date)
 
-# Company field
-tk.Label(root, text="Firma:").grid(row=2, column=0, padx=10, pady=5, sticky="e")
-company_var = tk.StringVar()
-tk.Entry(root, textvariable=company_var, width=50).grid(row=2, column=1, padx=10, pady=5)
+    if not datelastday:
+        messagebox.showerror("Error", "Invalid date format! Use YYYY-MM-DD")
+        return
 
-# Prefix field
-tk.Label(root, text="Prefix:").grid(row=3, column=0, padx=10, pady=5, sticky="e")
-prefix_var = tk.StringVar()
-tk.Entry(root, textvariable=prefix_var, width=50).grid(row=3, column=1, padx=10, pady=5)
+    try:
+        # Run idtransformer.py first
+        subprocess.run(["python", "idtransformer.py", filepath, prefix, date, company, datelastday], check=True)
+        # Run zavtransformer.py second
+        subprocess.run(["python", "zavtransformer.py", filepath, prefix, date, company, datelastday], check=True)
 
-# GO button
-tk.Button(root, text="GO!", command=start_program, bg="green", fg="white", font=("Arial", 12, "bold")).grid(
-    row=4, column=0, columnspan=3, pady=20
-)
+        messagebox.showinfo("Success", f"Scripts executed successfully!\nLast day of the month: {datelastday}")
+
+    except subprocess.CalledProcessError as e:
+        messagebox.showerror("Execution Error", f"An error occurred while running scripts:\n{e}")
+
+# Create the main window
+root = ttk.Window(themename="darkly")  # Modern dark mode UI
+root.title("TMRP - XML Transformer")
+root.geometry("700x350")
+
+# Styling
+style = ttk.Style()
+style.configure("TButton", font=("Arial", 12), padding=8)
+style.configure("TEntry", font=("Arial", 12), padding=5)
+
+# Title
+title_label = ttk.Label(root, text="Zadajte informácie", font=("Arial", 16, "bold"))
+title_label.pack(pady=10)
+
+# Frame for input fields
+frame = ttk.Frame(root)
+frame.pack(pady=5, padx=20, fill="x")
+
+# Labels and Entry Fields
+ttk.Label(frame, text="Dátum (RRRR-MM-DD):", font=("Arial", 12)).grid(row=0, column=0, sticky="w", pady=5)
+entry_date = ttk.Entry(frame, width=30)
+entry_date.grid(row=0, column=1, padx=10, pady=5)
+
+ttk.Label(frame, text="Firma:", font=("Arial", 12)).grid(row=1, column=0, sticky="w", pady=5)
+entry_company = ttk.Entry(frame, width=30)
+entry_company.grid(row=1, column=1, padx=10, pady=5)
+
+ttk.Label(frame, text="Prefix:", font=("Arial", 12)).grid(row=2, column=0, sticky="w", pady=5)
+entry_prefix = ttk.Entry(frame, width=30)
+entry_prefix.grid(row=2, column=1, padx=10, pady=5)
+
+ttk.Label(frame, text="Vstupný subor:", font=("Arial", 12)).grid(row=3, column=0, sticky="w", pady=5)
+entry_filepath = ttk.Entry(frame, width=30)
+entry_filepath.grid(row=3, column=1, padx=10, pady=5)
+
+browse_button = ttk.Button(frame, text="Hľadať", command=browse_file, bootstyle="primary")
+browse_button.grid(row=3, column=2, padx=10, pady=5)
+
+# Go Button
+go_button = ttk.Button(root, text="Go!", command=save_and_run, bootstyle="success")
+go_button.pack(pady=20)
 
 # Run the application
 root.mainloop()

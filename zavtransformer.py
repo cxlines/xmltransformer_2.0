@@ -1,10 +1,12 @@
 import csv
-from xml.etree.ElementTree import Element, SubElement, tostring, ElementTree
 import os
+import sys
 
-# Specify the path to your .csv file
-csv_file_path = r'C:\Users\mulle\Desktop\JASPRAVIM25\marian11_app\xmltransformer\mz001.csv'
-
+csv_file_path = sys.argv[1]
+myprefix = sys.argv[2]
+mydate = sys.argv[3]
+mycompany = sys.argv[4]
+lastday = sys.argv[5]
 # Initialize variables
 castka3Sum = 0
 castka46Sum = 0
@@ -124,15 +126,15 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
     <SeznamZavazku>
         <Zavazek>
             <Doklad></Doklad>
-            <DRada>MZAV2</DRada>
-            <Popis>sociálne poistenie 12/2023</Popis>
-            <PrDokl>SP122023</PrDokl>
-            <VarSym>122023</VarSym>
-            <DatUcPr>2023-12-31</DatUcPr>
-            <DatVyst>2023-12-31</DatVyst>
-            <DatSpl>2024-01-31</DatSpl>
-            <DatPln>2023-12-31</DatPln>
-            <Doruceno>2023-12-31</Doruceno>
+            <DRada>{myprefix}</DRada>
+            <Popis>sociálne poistenie {dateSMR}</Popis>
+            <PrDokl>SP{dateMR}</PrDokl>
+            <VarSym>{dateMR}</VarSym>
+            <DatUcPr>{mydate}</DatUcPr>
+            <DatVyst>{mydate}</DatVyst>
+            <DatSpl>{lastday}</DatSpl>
+            <DatPln>{mydate}</DatPln>
+            <Doruceno>{mydate}</Doruceno>
             <Dbrpis>0</Dbrpis>
             <Adresa>
                 <ObchNazev>Sociálna poisťovňa</ObchNazev>
@@ -166,20 +168,20 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
             <ZjednD>0</ZjednD>
             <SeznamRozuctPolozek>
                 <RozuctPolozka>
-                    <Popis>sociálne poistenie 12/2023 - zamestnávateľ</Popis>
+                    <Popis>sociálne poistenie {dateSMR} - zamestnávateľ</Popis>
                     <UcMD>524000</UcMD>
                     <UcD>336000</UcD>
                     <Castka>{castka1Sum}</Castka> 
-                    <ParSym>SP122023</ParSym>
+                    <ParSym>SP{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
                 <RozuctPolozka>
-                    <Popis>sociálne poistenie 12/2023 - zamestnanec</Popis>
+                    <Popis>sociálne poistenie {dateSMR} - zamestnanec</Popis>
                     <UcMD>331000</UcMD>
                     <UcD>336000</UcD>
                     <Castka>{castka2Sum}</Castka> 
-                    <ParSym>SP122023</ParSym>
+                    <ParSym>SP{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
@@ -187,15 +189,15 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
         </Zavazek>
         <Zavazek>
             <Doklad></Doklad>
-            <DRada>MZAV2</DRada>
-            <Popis>zdravotné poistenie 12/2023</Popis>
-            <PrDokl>VSZP122023</PrDokl>
-            <VarSym>122023</VarSym>
-            <DatUcPr>2023-12-31</DatUcPr>
-            <DatVyst>2023-12-31</DatVyst>
-            <DatSpl>2024-01-25</DatSpl>
-            <DatPln>2023-12-31</DatPln>
-            <Doruceno>2023-12-31</Doruceno>
+            <DRada>{myprefix}</DRada>
+            <Popis>zdravotné poistenie {dateSMR}</Popis>
+            <PrDokl>VSZP{dateMR}</PrDokl>
+            <VarSym>{dateMR}</VarSym>
+            <DatUcPr>{mydate}</DatUcPr>
+            <DatVyst>{mydate}</DatVyst>
+            <DatSpl>{lastday}</DatSpl>
+            <DatPln>{mydate}</DatPln>
+            <Doruceno>{mydate}</Doruceno>
             <Dbrpis>0</Dbrpis>
             <Adresa>
                 <ObchNazev>Všeobecná zdravotná poisťovňa, a.s.</ObchNazev>
@@ -220,20 +222,20 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
             <ZjednD>0</ZjednD>
             <SeznamRozuctPolozek>
                 <RozuctPolozka>
-                    <Popis>zdravotné poistenie 12/2023 - zamestnávateľ</Popis>
+                    <Popis>zdravotné poistenie {dateSMR} - zamestnávateľ</Popis>
                     <UcMD>524000</UcMD>
                     <UcD>336000</UcD>
                     <Castka>{castka3Sum}</Castka> 
-                    <ParSym>VSZP122023</ParSym>
+                    <ParSym>VSZP{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
                 <RozuctPolozka>
-                    <Popis>zdravotné poistenie 12/2023 - zamestnanec</Popis>
+                    <Popis>zdravotné poistenie {dateSMR} - zamestnanec</Popis>
                     <UcMD>331000</UcMD>
                     <UcD>336000</UcD>
                     <Castka>{castka46Sum}</Castka>
-                    <ParSym>VSZP122023</ParSym>
+                    <ParSym>VSZP{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
@@ -241,15 +243,15 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
         </Zavazek>
         <Zavazek>
             <Doklad></Doklad>
-            <DRada>MZAV2</DRada>
-            <Popis>zdravotné poistenie 12/2023</Popis>
-            <PrDokl>DOZP122023</PrDokl>
-            <VarSym>122023</VarSym>
-            <DatUcPr>2023-12-31</DatUcPr>
-            <DatVyst>2023-12-31</DatVyst>
-            <DatSpl>2024-01-25</DatSpl>
-            <DatPln>2023-12-31</DatPln>
-            <Doruceno>2023-12-31</Doruceno>
+            <DRada>{myprefix}</DRada>
+            <Popis>zdravotné poistenie {dateSMR}</Popis>
+            <PrDokl>DOZP{dateMR}</PrDokl>
+            <VarSym>{dateMR}</VarSym>
+            <DatUcPr>{mydate}</DatUcPr>
+            <DatVyst>{mydate}</DatVyst>
+            <DatSpl>{lastday}</DatSpl>
+            <DatPln>{mydate}</DatPln>
+            <Doruceno>{mydate}</Doruceno>
             <Dbrpis>0</Dbrpis>
             <Adresa>
                 <ObchNazev>DÔVERA zdravotná poisťovňa, a. s.</ObchNazev>
@@ -274,20 +276,20 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
             <ZjednD>0</ZjednD>           
             <SeznamRozuctPolozek>
                 <RozuctPolozka>
-                    <Popis>zdravotné poistenie 12/2023 - zamestnávateľ</Popis>
+                    <Popis>zdravotné poistenie {dateSMR} - zamestnávateľ</Popis>
                     <UcMD>524000</UcMD>
                     <UcD>336000</UcD>
                     <Castka>{castka5Sum}</Castka>
-                    <ParSym>DOZP122023</ParSym>
+                    <ParSym>DOZP{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
                 <RozuctPolozka>
-                    <Popis>zdravotné poistenie 12/2023 - zamestnanec</Popis>
+                    <Popis>zdravotné poistenie {dateSMR} - zamestnanec</Popis>
                     <UcMD>331000</UcMD>
                     <UcD>336000</UcD>
                     <Castka>{castka46Sum}</Castka> 
-                    <ParSym>DOZP122023</ParSym>
+                    <ParSym>DOZP{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
@@ -295,15 +297,15 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
         </Zavazek>
         <Zavazek>
             <Doklad></Doklad>
-            <DRada>MZAV2</DRada>
-            <Popis>zdravotné poistenie 12/2023</Popis>
-            <PrDokl>UNZP122023</PrDokl>
-            <VarSym>122023</VarSym>
-            <DatUcPr>2023-12-31</DatUcPr>
-            <DatVyst>2023-12-31</DatVyst>
-            <DatSpl>2024-01-25</DatSpl>
-            <DatPln>2023-12-31</DatPln>
-            <Doruceno>2023-12-31</Doruceno>
+            <DRada>{myprefix}</DRada>
+            <Popis>zdravotné poistenie {dateSMR}</Popis>
+            <PrDokl>UNZP{dateMR}</PrDokl>
+            <VarSym>{dateMR}</VarSym>
+            <DatUcPr>{mydate}</DatUcPr>
+            <DatVyst>{mydate}/DatVyst>
+            <DatSpl>{lastday}</DatSpl>
+            <DatPln>{mydate}</DatPln>
+            <Doruceno>{mydate}</Doruceno>
             <Dbrpis>0</Dbrpis>
             <Adresa>
                 <ObchNazev>Union zdravotná poisťovňa, a.s.</ObchNazev>
@@ -328,20 +330,20 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
             <ZjednD>0</ZjednD>
             <SeznamRozuctPolozek>
                 <RozuctPolozka>
-                    <Popis>zdravotné poistenie 12/2023 - zamestnávateľ</Popis>
+                    <Popis>zdravotné poistenie {dateSMR} - zamestnávateľ</Popis>
                     <UcMD>524000</UcMD>
                     <UcD>336000</UcD>
                     <Castka>{castka7Sum}</Castka> 
-                    <ParSym>UNZP122023</ParSym>
+                    <ParSym>UNZP{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
                 <RozuctPolozka>
-                    <Popis>zdravotné poistenie 12/2023 - zamestnanec</Popis>
+                    <Popis>zdravotné poistenie {dateSMR} - zamestnanec</Popis>
                     <UcMD>331000</UcMD>
                     <UcD>336000</UcD>
                     <Castka>{castka8Sum}</Castka>
-                    <ParSym>UNZP122023</ParSym>
+                    <ParSym>UNZP{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
@@ -349,15 +351,15 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
         </Zavazek>
         <Zavazek>
             <Doklad></Doklad>
-            <DRada>MZAV2</DRada>
-            <Popis>daň zo mzdy 12/2023</Popis>
-            <PrDokl>DU122023</PrDokl>
-            <VarSym>122023</VarSym>
-            <DatUcPr>2023-12-31</DatUcPr>
-            <DatVyst>2023-12-31</DatVyst>
-            <DatSpl>2024-01-25</DatSpl>
-            <DatPln>2023-12-31</DatPln>
-            <Doruceno>2023-12-31</Doruceno>
+            <DRada>{myprefix}</DRada>
+            <Popis>daň zo mzdy {dateSMR}</Popis>
+            <PrDokl>DU{dateMR}</PrDokl>
+            <VarSym>{dateMR}</VarSym>
+            <DatUcPr>{mydate}</DatUcPr>
+            <DatVyst>{mydate}</DatVyst>
+            <DatSpl>{lastday}</DatSpl>
+            <DatPln>{mydate}</DatPln>
+            <Doruceno>{mydate}</Doruceno>
             <Dbrpis>0</Dbrpis>
             <Adresa>
                 <ObchNazev>Daňový úrad</ObchNazev>
@@ -382,20 +384,20 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
             <ZjednD>0</ZjednD>
             <SeznamRozuctPolozek>
                 <RozuctPolozka>
-                    <Popis>daň zo mzdy 12/2023</Popis>
+                    <Popis>daň zo mzdy {dateSMR}</Popis>
                     <UcMD>331000</UcMD>
                     <UcD>342000</UcD>
                     <Castka>{castka9Sum}</Castka> 
-                    <ParSym>DU122023</ParSym>
+                    <ParSym>DU{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
                 <RozuctPolozka>
-                    <Popis>daňový bonus 12/2023</Popis>
+                    <Popis>daňový bonus {dateSMR}</Popis>
                     <UcMD>331000</UcMD>
                     <UcD>342000</UcD>
                     <Castka>{castka10Sum}</Castka> 
-                    <ParSym>DU122023</ParSym>
+                    <ParSym>DU{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
@@ -403,15 +405,15 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
         </Zavazek>
         <Zavazek>
             <Doklad></Doklad>
-            <DRada>MZAV2</DRada>
-            <Popis>mzdy na účet 12/2023</Popis>
-            <PrDokl>MZ122023</PrDokl>
-            <VarSym>122023</VarSym>
-            <DatUcPr>2023-12-31</DatUcPr>
-            <DatVyst>2023-12-31</DatVyst>
-            <DatSpl>2024-01-25</DatSpl>
-            <DatPln>2023-12-31</DatPln>
-            <Doruceno>2023-12-31</Doruceno>
+            <DRada>{myprefix}</DRada>
+            <Popis>mzdy na účet {dateSMR}</Popis>
+            <PrDokl>MZ{dateMR}</PrDokl>
+            <VarSym>{dateMR}</VarSym>
+            <DatUcPr>{mydate}</DatUcPr>
+            <DatVyst>{mydate}</DatVyst>
+            <DatSpl>{lastday}</DatSpl>
+            <DatPln>{mydate}</DatPln>
+            <Doruceno>{mydate}</Doruceno>
             <Dbrpis>0</Dbrpis>
             <Adresa>
                 <ObchNazev>Zamestnanci</ObchNazev>
@@ -436,20 +438,20 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
             <ZjednD>0</ZjednD>
             <SeznamRozuctPolozek>
                 <RozuctPolozka>
-                    <Popis>mzdy na účet 12/2023</Popis>
+                    <Popis>mzdy na účet {dateSMR}</Popis>
                     <UcMD>331000</UcMD>
                     <UcD>331331</UcD>
                     <Castka>{castka11Sum}</Castka> 
-                    <ParSym>MZ122023</ParSym>
+                    <ParSym>MZ{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
                 <RozuctPolozka>
-                    <Popis>mzdy v hotovosti 12/2023</Popis>
+                    <Popis>mzdy v hotovosti {dateSMR}</Popis>
                     <UcMD>331000</UcMD>
                     <UcD>331331</UcD>
                     <Castka>{castka12Sum}</Castka> 
-                    <ParSym>MZ122023</ParSym>
+                    <ParSym>MZ{dateMR}</ParSym>
                     <TypCena>0</TypCena>
                     <SazbaDPH>0</SazbaDPH>
                 </RozuctPolozka>
@@ -459,7 +461,7 @@ xml_template = f"""<?xml version="1.0" encoding="UTF-8"?>
 </MoneyData>
 """
 # Output to file
-output_path = os.path.join(os.getcwd(), "ZAV.xml")
+output_path = os.path.join(os.getcwd(), f"ZAV_{mycompany}_{mydate}.xml")
 with open(output_path, "w", encoding="utf-8") as xml_file:
     xml_file.write(xml_template)
 
